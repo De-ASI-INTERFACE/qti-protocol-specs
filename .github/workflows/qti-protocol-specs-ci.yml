@@ -30,3 +30,23 @@ jobs:
           echo "Ensuring QTI_Protocol_v*_Specification.md files exist in repo"
           ls QTI_Protocol_v*_Specification.md
 
+  spec-structure-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate institutional spec structure
+        run: |
+          set -e
+          for file in QTI_Protocol_v*_Specification.md; do
+            echo "Checking structure for $file"
+            for section in "## 1. Objectives" "## 2. Architecture Overview" "## 5. Testing Matrix" "## 6. Validation Gates" "## 8. Risk Register"; do
+              if ! grep -q "$section" "$file"; then
+                echo "❌ Missing section '$section' in $file"
+                exit 1
+              fi
+            done
+          done
+          echo "✅ All spec files contain required institutional sections"
