@@ -1,0 +1,32 @@
+name: QTI Protocol Specs CI
+
+on:
+  pull_request:
+    branches: [ main, staging, develop ]
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install markdownlint
+        run: |
+          npm install -g markdownlint-cli
+
+      - name: Lint markdown specs
+        run: |
+          markdownlint "**/*.md" --ignore node_modules
+
+      - name: Check file naming and locations
+        run: |
+          echo "Ensuring QTI_Protocol_v*_Specification.md files exist in repo"
+          ls QTI_Protocol_v*_Specification.md
+
